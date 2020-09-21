@@ -1,6 +1,7 @@
 library(here)
 library(igraph)
 
+
 graph.file <- here("data", "CA-GrQc.txt")
 graph.data <- read.table(graph.file, header = TRUE)
 
@@ -32,18 +33,18 @@ communities = cluster_fast_greedy(graph.simple)
 coords = layout_with_graphopt(graph.simple)
 plot(communities, graph.simple, layout=coords, vertex.size=1, vertex.label=NA)
 
-# Only 3 graphs with values > 10, trying to do histogram
-dec <- decompose(graph.simple)
-sizes = sapply(dec, vcount)
-hist(sizes, breaks = 5, xlim=c(0, gsize(largest)))
+# Over 50% only has 2 authors
+sizes = sapply(decompose, vcount)
 
+sizes.table = table(sizes)
+percent <- prop.table(sizes.table)*100
+barplot(percent)
+
+# Trimming
 trim = decompose[lapply(decompose, vcount)>10]
 message(length(trim))
 
 # Removes the "not so connected" vertices
-message(gsize(graph.simple))
-graph.simple <- delete.vertices(graph.simple, which(degree(graph.simple)<=10))
-message(gsize(graph.simple))
-
-#layout <- layout.circle(graph)
-plot.igraph(graph.simple, layout=layout.kamada.kawai, vertex.size=1, vertex.label=NA)
+# message(gsize(graph.simple))
+# graph.simple <- delete.vertices(graph.simple, which(degree(graph.simple)<=10))
+# message(gsize(graph.simple))
