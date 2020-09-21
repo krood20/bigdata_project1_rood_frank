@@ -13,20 +13,32 @@ graph.simple <- simplify(
   remove.loops = TRUE
 )
 
-# 355 diconnected subgraphs
+# 355 disconnected subgraphs
 decompose <- decompose(graph.simple)
 length(decompose)
 
 # Selects larges graph
 largest <- decompose[[which.max(sapply(decompose, vcount))]]
 message(gsize(largest))
+layout = layout_in_circle(largest)
 plot.igraph(largest, layout=layout.kamada.kawai, vertex.size=1, vertex.label=NA)
 
 # Smallest has no vertices?
 smallest <- decompose[[which.min(sapply(decompose, vcount))]]
 message(gsize(smallest))
 
-#components(graph.simple)
+# Cool visualization
+communities = cluster_fast_greedy(graph.simple)
+coords = layout_with_graphopt(graph.simple)
+plot(communities, graph.simple, layout=coords, vertex.size=1, vertex.label=NA)
+
+# Only 3 graphs with values > 10, trying to do histogram
+dec <- decompose(graph.simple)
+sizes = sapply(dec, vcount)
+hist(sizes, breaks = 5, xlim=c(0, gsize(largest)))
+
+trim = decompose[lapply(decompose, vcount)>10]
+message(length(trim))
 
 # Removes the "not so connected" vertices
 message(gsize(graph.simple))
