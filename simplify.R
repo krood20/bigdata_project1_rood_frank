@@ -15,18 +15,18 @@ graph.simple <- simplify(
 )
 
 # 355 disconnected subgraphs
-decompose <- decompose(graph.simple)
-length(decompose)
+dec <- decompose(graph.simple)
+message(length(dec))
 
-# Selects larges graph
-largest <- decompose[[which.max(sapply(decompose, vcount))]]
-message(gsize(largest))
+# Selects largest graph (4158)
+largest <- dec[[which.max(sapply(dec, vcount))]]
+message(vcount(largest))
 layout = layout_in_circle(largest)
 plot.igraph(largest, layout=layout.kamada.kawai, vertex.size=1, vertex.label=NA)
 
-# Smallest has no vertices?
+# Smallest has 1 node
 smallest <- decompose[[which.min(sapply(decompose, vcount))]]
-message(gsize(smallest))
+message(vcount(smallest))
 
 # Cool visualization
 communities = cluster_fast_greedy(graph.simple)
@@ -35,14 +35,25 @@ plot(communities, graph.simple, layout=coords, vertex.size=1, vertex.label=NA)
 
 # Over 50% only has 2 authors
 sizes = sapply(decompose, vcount)
-
 sizes.table = table(sizes)
-percent <- prop.table(sizes.table)*100
-barplot(percent)
+sizes.percent <- prop.table(sizes.table)*100
+barplot(
+  sizes.percent, 
+  ylab = "Percent Distribution", 
+  xlab="# Vertices in Graph", 
+  col="darkred",
+  ylim=range(pretty(c(0, percent)))
+)
+
+isolated = which(sapply(dec, vcount)==1)
+plot(dec[[isolated]])
+
+isolated <- which(degree(graph.simple)==0)
+isolated
 
 # Trimming
-trim = decompose[lapply(decompose, vcount)>10]
-message(length(trim))
+#trim = decompose[lapply(decompose, vcount)>10]
+#message(length(trim))
 
 # Removes the "not so connected" vertices
 # message(gsize(graph.simple))
