@@ -5,7 +5,7 @@ library(igraph)
 dataPath <- "./Documents/grad/bigdata/bigdata_project1_rood_frank"
 setwd(dataPath)
 getwd()
-myData <- read.delim("project1_data.txt")
+myData <- read.delim("data/project1_data.txt")
 
 #set up graph
 agraph <- graph_from_edgelist(as.matrix(myData))
@@ -23,9 +23,7 @@ agraph.density
 igraph::edge_density(agraph)
 igraph::edge_density(agraph, loops=T)
 
-agraph.ego <- ego.extract(agraph)
-agraph.ego[1]
-
+#degree centrality
 igraph::degree(agraph)
 igraph::centr_betw(agraph)
 igraph::centr_clo(agraph)
@@ -33,3 +31,7 @@ igraph::get.shortest.paths(agraph, 5)
 
 #historgram
 hist(igraph::degree(agraph))
+
+
+
+
