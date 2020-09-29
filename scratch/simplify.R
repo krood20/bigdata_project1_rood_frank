@@ -1,6 +1,7 @@
 library(here)
 library(igraph)
 
+source("graph-functions.R")
 
 graph.file <- here("data", "CA-GrQc.txt")
 graph.data <- read.table(graph.file, header = TRUE)
@@ -34,7 +35,7 @@ coords = layout_with_graphopt(graph.simple)
 plot(communities, graph.simple, layout=coords, vertex.size=1, vertex.label=NA)
 
 # Over 50% only has 2 authors
-sizes = sapply(decompose, vcount)
+sizes = sapply(dec, vcount)
 sizes.table = table(sizes)
 sizes.percent <- prop.table(sizes.table)*100
 barplot(
@@ -42,7 +43,7 @@ barplot(
   ylab = "Percent Distribution", 
   xlab="# Vertices in Graph", 
   col="darkred",
-  ylim=range(pretty(c(0, percent)))
+  ylim=range(pretty(c(0, sizes.percent)))
 )
 
 isolated = which(sapply(dec, vcount)==1)
