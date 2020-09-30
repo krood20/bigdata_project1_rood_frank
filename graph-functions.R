@@ -32,14 +32,16 @@ attr(sanity_check, "help") <- "Designed to work with slim data set, performs sto
 
 analyze_components <- function(graph) {
   # Find graphs with highest order
-  dec <- decompose(graph.simple)
+  dec <- decompose(graph)
   message(sprintf("Found %d communities within graph", length(dec)))
   largest <- dec[[which.max(sapply(dec, vcount))]]
   message(sprintf("The largest graph has %d nodes, and %d edges", vcount(largest), gsize(largest)))
   smallest <- dec[[which.min(sapply(dec, vcount))]]
   message(sprintf("The smallest graph has %d nodes, and %d edges", vcount(smallest), gsize(smallest)))
   
-  # Ensure we are not confusing, size
+  message(smallest)
+  
+  # Ensure we are not confusing |N| with |V|
   stopifnot(which.max(sapply(dec, vcount)) == which.max(sapply(dec, gsize)))
   
   # Plot sizes
@@ -60,12 +62,13 @@ analyze_components <- function(graph) {
 attr(analyze_components, "comment") <- "Produces stats and histogram for community size"
 attr(analyze_components, "help") <- "Shows vertex distribution as size of |N|"
 
-plot_egos <- function(graph){
+plot_communities <- function(graph){
   communities = cluster_fast_greedy(graph)
   coords = layout_with_graphopt(graph)
   plot(communities, graph, layout=coords, vertex.size=1, vertex.label=NA)
 }
 
-
+attr(plot_communities, "comment") <- "Color codes dense subgraphs by modularity score and plots"
+attr(plot_communities, "help") <- "Leverages the cluster_fast_greedy algorithim to determine communties"
 
 
